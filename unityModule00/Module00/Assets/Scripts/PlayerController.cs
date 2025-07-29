@@ -49,6 +49,15 @@ public class PlayerController : MonoBehaviour
 		rb.MovePosition(rb.position + move * moveSpeed * Time.fixedDeltaTime);
     }
 
+	private void OnCollisionEnter(Collision collision)
+	{
+    	if (collision.gameObject.CompareTag("Lava"))
+    	{
+        	Debug.Log("Game Over");
+        	Destroy(gameObject); // destroys the player (the sphere)
+    	}
+	}
+
 	private void OnMove(InputAction.CallbackContext context)
 	{
 		moveInput = context.ReadValue<Vector2>();
