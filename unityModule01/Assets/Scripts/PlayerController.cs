@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 	public float moveSpeed = 3f;
 	public float jumpForce = 5f;
 	public bool isGrounded = true;
+	public string characterId;
 
 	public static class CharacterRegistry
 	{
