@@ -72,5 +72,5 @@ InitTestScene*.unity*
 
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
-/unityModule00/**/Library/PackageCache/**/data~/
-
+.nfs*
+.vscode/

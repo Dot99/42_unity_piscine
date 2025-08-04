@@ -1,23 +1,38 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
+	private static int activeCharacterIndex = -1;
 	private static PlayerInputActions inputActions;
 	private static GameObject activePlayer;
+	private GameObject[] sceneCharacters;
 	private Rigidbody rb;
 	private Camera mainCamera;
+	private MovingPlatform currentPlatform;
 
 	public float moveSpeed = 3f;
 	public float jumpForce = 5f;
 	public bool isGrounded = true;
 	public string characterId;
 
-	public static class CharacterRegistry
-	{
-		public static GameObject[] Characters;
-	}
+	void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        activePlayer = null;
+        activeCharacterIndex = -1;
+    }
 
 	void Awake()
 	{
@@ -31,36 +46,55 @@ public class PlayerController : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody>();
 		mainCamera = Camera.main;
-		CharacterRegistry.Characters = new GameObject[]
+
+		var scene = gameObject.scene;
+		var rootObjects = scene.GetRootGameObjects();
+
+		sceneCharacters = new GameObject[3];
+		foreach (var obj in rootObjects)
 		{
-				GameObject.Find("Blue"),
-				GameObject.Find("Red"),
-				GameObject.Find("Yellow")
-		};
+			if (obj.name == "Blue") sceneCharacters[0] = obj;
+			if (obj.name == "Red") sceneCharacters[1] = obj;
+			if (obj.name == "Yellow") sceneCharacters[2] = obj;
+		}
+		if (activeCharacterIndex >= 0 && activeCharacterIndex < sceneCharacters.Length)
+		{
+			activePlayer = sceneCharacters[activeCharacterIndex];
+		}
 	}
 
 	void Update()
 	{
-		if (activePlayer == gameObject)
+		if (activePlayer == gameObject && gameObject.scene == SceneManager.GetActiveScene())
 		{
 			float moveInputX = inputActions.Player.Move.ReadValue<float>();
-			if (activePlayer == gameObject)
+			Vector3 velocity = rb.linearVelocity;
+			velocity.x = moveInputX * moveSpeed;
+
+			// Apply platform velocity if on one
+			if (isGrounded && currentPlatform != null)
 			{
-				Vector3 velocity = rb.linearVelocity;
-				velocity.x = moveInputX * moveSpeed;
-				rb.linearVelocity = velocity;
+				velocity += currentPlatform.CurrentVelocity;
 			}
+
+			rb.linearVelocity = velocity;
 			if (inputActions.Player.Jump.triggered && isGrounded)
 			{
 				rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 				isGrounded = false;
+				currentPlatform = null;
 			}
-			if (mainCamera != null)
+			var cameras = gameObject.scene.GetRootGameObjects()
+							.SelectMany(go => go.GetComponentsInChildren<Camera>(true))
+							.Where(cam => cam.CompareTag("MainCamera") && cam.enabled)
+							.ToList();
+			Camera currentCamera = cameras.FirstOrDefault();
+			if (currentCamera != null)
 			{
-				Vector3 camPos = mainCamera.transform.position;
+				Vector3 camPos = currentCamera.transform.position;
 				camPos.x = transform.position.x;
 				camPos.y = transform.position.y;
-				mainCamera.transform.position = camPos;
+				currentCamera.transform.position = camPos;
 			}
 		}
 		if (inputActions.CharSelection.SwitchTo1.triggered)
@@ -76,12 +110,80 @@ public class PlayerController : MonoBehaviour
 	void OnCollisionEnter(Collision collision)
 	{
 		if (collision.contacts[0].normal.y > 0.5f)
+		{
 			isGrounded = true;
+
+			string platformTag = collision.gameObject.tag;
+
+			if (
+				(platformTag == "RedPlatform" && characterId != "Red") ||
+				(platformTag == "BluePlatform" && characterId != "Blue") ||
+				(platformTag == "YellowPlatform" && characterId != "Yellow")
+			)
+			{
+				Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+				return;
+			}
+
+			// Only store the platform if it's correct
+			if (collision.gameObject.TryGetComponent(out MovingPlatform platform))
+			{
+				currentPlatform = platform;
+			}
+		}
+	}
+	void OnCollisionExit(Collision collision)
+	{
+		if (collision.gameObject.TryGetComponent(out MovingPlatform platform))
+		{
+			if (platform == currentPlatform)
+			{
+				currentPlatform = null;
+			}
+		}
 	}
 
 	static void SetActiveCharacter(int index)
 	{
-		if (index >= 0 && index < CharacterRegistry.Characters.Length)
-			activePlayer = CharacterRegistry.Characters[index];
+		activeCharacterIndex = index;
+		var scene = SceneManager.GetActiveScene();
+		var rootObjects = scene.GetRootGameObjects();
+
+		GameObject charactersParent = null;
+		foreach (var obj in rootObjects)
+		{
+			if (obj.name == "Characters")
+			{
+				charactersParent = obj;
+				break;
+			}
+		}
+		if (charactersParent == null)
+			return;
+		string targetName = index switch
+		{
+			0 => "Blue",
+			1 => "Red",
+			2 => "Yellow",
+			_ => null
+		};
+		if (string.IsNullOrEmpty(targetName))
+		{
+			Debug.LogError($"Invalid character index {index}!");
+			return;
+		}
+		Transform targetTransform = charactersParent.transform.Find(targetName);
+		if (targetTransform == null)
+			return;
+		activePlayer = targetTransform.gameObject;
+	}
+
+
+	void OnDestroy()
+	{
+		if (SceneManager.GetActiveScene().isLoaded)
+		{
+			activePlayer = null;
+		}
 	}
 }
