@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MovingPlatform : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MovingPlatform : MonoBehaviour
 	private Vector3 targetPos;
 	private Vector3 lastPosition;
 	private Vector3 currentVelocity;
+	private bool isActive = false;
 
 	public Vector3 CurrentVelocity => currentVelocity;
 
@@ -18,10 +20,15 @@ public class MovingPlatform : MonoBehaviour
 		startPos = transform.position;
 		targetPos = startPos + moveDirection.normalized * moveDistance;
 		lastPosition = transform.position;
+		if (SceneManager.GetActiveScene().name != "Stage4")
+        {
+            isActive = true;
+        }
 	}
 
 	void Update()
 	{
+		if(!isActive) return;
 		// Move platform
 		float pingPong = Mathf.PingPong(Time.time * moveSpeed, 1f);
 		transform.position = Vector3.Lerp(startPos, targetPos, pingPong);
@@ -29,5 +36,10 @@ public class MovingPlatform : MonoBehaviour
 		// Calculate velocity
 		currentVelocity = (transform.position - lastPosition) / Time.deltaTime;
 		lastPosition = transform.position;
+	}
+
+	public void Activate()
+	{
+		isActive = true;
 	}
 }
