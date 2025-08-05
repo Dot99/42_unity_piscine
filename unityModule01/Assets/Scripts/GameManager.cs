@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
 		{
 			if (!exit.isOccupied)
 			{
-				Debug.Log("Good alignment!");
+				allAligned = false;
 				return;
 			}
 		}

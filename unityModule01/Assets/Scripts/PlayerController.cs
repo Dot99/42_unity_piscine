@@ -74,7 +74,9 @@ public class PlayerController : MonoBehaviour
 			// Apply platform velocity if on one
 			if (isGrounded && currentPlatform != null)
 			{
-				velocity += currentPlatform.CurrentVelocity;
+				Vector3 platformVelocity = currentPlatform.CurrentVelocity;
+				platformVelocity.y = 0;  // Ignore vertical movement
+				velocity += platformVelocity;
 			}
 
 			rb.linearVelocity = velocity;
