@@ -7,6 +7,7 @@ TagManager:
   - BluePlatform
   - RedPlatform
   - YellowPlatform
+  - CameraBlocker
   layers:
   - Default
   - TransparentFX

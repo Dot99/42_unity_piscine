@@ -20,7 +20,7 @@ public class MovingPlatform : MonoBehaviour
 		startPos = transform.position;
 		targetPos = startPos + moveDirection.normalized * moveDistance;
 		lastPosition = transform.position;
-		if (SceneManager.GetActiveScene().name != "Stage4")
+		if (SceneManager.GetActiveScene().name != "Stage4" && SceneManager.GetActiveScene().name != "Stage5")
         {
             isActive = true;
         }

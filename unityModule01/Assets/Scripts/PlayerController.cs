@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 	private Rigidbody rb;
 	private Camera mainCamera;
 	private MovingPlatform currentPlatform;
+	private bool cameraBlocked = false;
 
 	public float moveSpeed = 3f;
 	public float jumpForce = 5f;
@@ -91,7 +92,7 @@ public class PlayerController : MonoBehaviour
 							.Where(cam => cam.CompareTag("MainCamera") && cam.enabled)
 							.ToList();
 			Camera currentCamera = cameras.FirstOrDefault();
-			if (currentCamera != null)
+			if (currentCamera != null && !cameraBlocked)
 			{
 				Vector3 camPos = currentCamera.transform.position;
 				camPos.x = transform.position.x;
@@ -142,6 +143,15 @@ public class PlayerController : MonoBehaviour
 			{
 				currentPlatform = null;
 			}
+		}
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.CompareTag("CameraBlocker"))
+		{
+			cameraBlocked = true;
+			Debug.Log("Game Over!");
 		}
 	}
 
