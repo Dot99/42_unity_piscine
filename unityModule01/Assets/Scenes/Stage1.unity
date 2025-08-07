@@ -1840,7 +1840,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exitId: Blue
   requiredCharacter: {fileID: 530916456}
-  alignmentThreshold: 0.2
+  alignmentThreshold: 0.5
   isOccupied: 0
 --- !u!1 &1333020567
 GameObject:

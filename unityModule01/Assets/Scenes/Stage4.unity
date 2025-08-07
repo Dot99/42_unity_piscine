@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exitId: Yellow
-  requiredCharacter: {fileID: 0}
+  requiredCharacter: {fileID: 54161324}
   alignmentThreshold: 0.2
   isOccupied: 0
 --- !u!54 &3544463
@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exitId: Red
-  requiredCharacter: {fileID: 0}
+  requiredCharacter: {fileID: 2016256294}
   alignmentThreshold: 0.2
   isOccupied: 0
 --- !u!54 &226213402
@@ -835,7 +835,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 286378885}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &286378887
 Camera:
   m_ObjectHideFlags: 0
@@ -1673,7 +1673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exitId: Blue
-  requiredCharacter: {fileID: 0}
+  requiredCharacter: {fileID: 618333669}
   alignmentThreshold: 0.5
   isOccupied: 0
 --- !u!54 &598943631
@@ -2507,7 +2507,7 @@ MonoBehaviour:
   - {fileID: 598943630}
   - {fileID: 226213401}
   - {fileID: 3544462}
-  nextSceneName: 0
+  nextSceneName: 4
 --- !u!4 &1087472891
 Transform:
   m_ObjectHideFlags: 0

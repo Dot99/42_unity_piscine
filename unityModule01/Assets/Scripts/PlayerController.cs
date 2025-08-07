@@ -153,6 +153,7 @@ public class PlayerController : MonoBehaviour
 			cameraBlocked = true;
 			Debug.Log("Game Over!");
 		}
+		if(other.CompareTag("GameOver")) Debug.Log("Game Over!");
 	}
 
 	static void SetActiveCharacter(int index)

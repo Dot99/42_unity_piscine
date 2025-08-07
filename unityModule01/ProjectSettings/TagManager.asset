@@ -8,6 +8,8 @@ TagManager:
   - RedPlatform
   - YellowPlatform
   - CameraBlocker
+  - GameOver
+  - Projectile
   layers:
   - Default
   - TransparentFX
