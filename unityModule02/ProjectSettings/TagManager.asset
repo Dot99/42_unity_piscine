@@ -2,19 +2,22 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - Base
+  - Limit
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - 
   - 
-  - 
-  - 
+  - Turret
+  - Bullet
   - 
   - 
   - 
@@ -41,3 +44,35 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1696992729
+    locked: 0
+  - name: Ground
+    uniqueID: 1502712205
+    locked: 0
+  - name: Shadows
+    uniqueID: 2464146785
+    locked: 0
+  - name: Buildings
+    uniqueID: 3870326035
+    locked: 0
+  - name: Water
+    uniqueID: 384522775
+    locked: 0
+  - name: Crossroads
+    uniqueID: 2216762439
+    locked: 0
+  - name: Roads
+    uniqueID: 1372860647
+    locked: 0
+  - name: Char
+    uniqueID: 1923601381
+    locked: 0
+  - name: Turrets
+    uniqueID: 1251834665
+    locked: 0
+  - name: Bullets
+    uniqueID: 3408313403
+    locked: 0
+  m_RenderingLayers:
+  - Default
