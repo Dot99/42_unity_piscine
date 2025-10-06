@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - Enemy
+  - Base
+  - Limit
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 731205021
+    locked: 0
+  - name: Shadows
+    uniqueID: 440658851
+    locked: 0
+  - name: Background
+    uniqueID: 563332167
+    locked: 0
+  - name: Crosses
+    uniqueID: 2111549127
+    locked: 0
+  - name: Water
+    uniqueID: 739575335
+    locked: 0
+  - name: Roads
+    uniqueID: 514574153
+    locked: 0
+  - name: Buildings
+    uniqueID: 4259836485
+    locked: 0
+  m_RenderingLayers:
+  - Default
