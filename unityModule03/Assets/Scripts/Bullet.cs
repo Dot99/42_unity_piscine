@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-	public float speed = 5f;
+	public float speed = 10f;
 	public float damage = 0.1f;
 
 	private Transform target;

@@ -4,16 +4,39 @@ public class Enemy : MonoBehaviour
 {
 	public float speed = 2f;
 	public float health;
-	private float maxHealth = 3f;
+	private readonly float maxHealth = 3f;
 
-	void Awake()
+	private Transform targetWaypoint;
+	private int waypointIndex = 0;
+
+	void Start()
 	{
 		health = maxHealth;
+		targetWaypoint = WaypointManager.Instance.waypoints[waypointIndex];
 	}
 
 	void Update()
 	{
-		transform.Translate(Vector2.down * speed * Time.deltaTime);
+		if (targetWaypoint == null) return;
+		Vector3 dir = targetWaypoint.position - transform.position;
+		transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+
+		if (Vector3.Distance(transform.position, targetWaypoint.position) <= 0.1f)
+		{
+			GetNextWaypoint();
+		}
+	}
+
+	void GetNextWaypoint()
+	{
+		waypointIndex++;
+		if (waypointIndex >= WaypointManager.Instance.waypoints.Length)
+		{
+			GameManager.Instance.TakeDamage(1);
+			Destroy(gameObject);
+			return;
+		}
+		targetWaypoint = WaypointManager.Instance.waypoints[waypointIndex];
 	}
 
 	public void TakeDamage(float damage)
@@ -21,6 +44,7 @@ public class Enemy : MonoBehaviour
 		health -= damage;
 		if (health <= 0)
 		{
+			GameManager.Instance.GainEnergy(10);
 			Destroy(gameObject);
 		}
 	}
@@ -29,7 +53,7 @@ public class Enemy : MonoBehaviour
 	{
 		if (other.CompareTag("Base"))
 		{
-			Base.Instance.TakeDamage(1);
+			GameManager.Instance.TakeDamage(1);
 			Destroy(gameObject);
 		}
 		else if (other.CompareTag("Limit"))

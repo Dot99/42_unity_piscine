@@ -14,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - BuildSquares
   - 
   - 
   - 
@@ -64,6 +64,15 @@ TagManager:
     locked: 0
   - name: Buildings
     uniqueID: 4259836485
+    locked: 0
+  - name: BuildGrid
+    uniqueID: 2969735365
+    locked: 0
+  - name: Enemies
+    uniqueID: 2006720947
+    locked: 0
+  - name: Bullets
+    uniqueID: 4104057069
     locked: 0
   m_RenderingLayers:
   - Default
