@@ -4,6 +4,8 @@ public class Enemy : MonoBehaviour
 {
 	public float speed = 2f;
 	public float health;
+
+	public int scoreValue = 10;
 	private readonly float maxHealth = 3f;
 
 	private Transform targetWaypoint;
@@ -45,6 +47,7 @@ public class Enemy : MonoBehaviour
 		if (health <= 0)
 		{
 			GameManager.Instance.GainEnergy(10);
+			GameManager.Instance.AddScore(scoreValue);
 			Destroy(gameObject);
 		}
 	}
