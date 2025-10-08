@@ -5,7 +5,7 @@ public class WinScreen : MonoBehaviour
 {
 	public void BackToMenu()
 	{
-		SceneManager.LoadScene("MainMenu");
+		SceneManager.LoadScene("Menu");
 	}
 
 	public void QuitGame()
