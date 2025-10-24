@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
 	public float moveSpeed = 5f;
 	public float jumpForce = 10f;
 
-	public float hp = 3f;
 	public Transform groundCheck;
 	public LayerMask groundLayer;
 	public int maxHp = 3;
@@ -26,12 +25,33 @@ public class PlayerController : MonoBehaviour
 	private Vector3 originalScale;
 	private int currentHp;
 
+
+	void Awake()
+	{
+		if (GameManager.Instance != null && GameManager.Instance.isResuming)
+		{
+			// Load saved position only when resuming
+			Vector3 savedPos = GameManager.Instance.GetSavedPlayerPosition();
+			transform.position = savedPos;
+			GameManager.Instance.isResuming = false;
+		}
+		else
+		{
+			// Otherwise, start at the StartPoint
+			StartPoint start = FindFirstObjectByType<StartPoint>();
+			if (start != null)
+			{
+				transform.position = start.transform.position;
+			}
+		}
+	}
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		originalScale = transform.localScale;
 		animator = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
+		currentHp = GameManager.Instance.hp;
 		currentHp = maxHp;
 	}
 
@@ -39,7 +59,7 @@ public class PlayerController : MonoBehaviour
 	{
 		moveInput = Input.GetAxis("Horizontal");
 		animator.SetBool("isWalking", moveInput != 0);
-		animator.SetBool("Dead", hp <= 0);
+		animator.SetBool("Dead", currentHp <= 0);
 
 		isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
 		if (Input.GetButtonDown("Jump") && isGrounded)
@@ -55,7 +75,7 @@ public class PlayerController : MonoBehaviour
 											   originalScale.y,
 											   originalScale.z);
 		}
-		if (hp <= 0)
+		if (currentHp <= 0)
 		{
 			moveInput = 0;
 			rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
@@ -68,13 +88,14 @@ public class PlayerController : MonoBehaviour
 		rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 	}
 
-	public void TakeDamage(float damage)
+	public void TakeDamage(int damage)
 	{
-		hp -= damage;
+		currentHp -= damage;
 		audioSource.PlayOneShot(damageSound);
-		if (hp <= 0)
+		UIManager.Instance.UpdateHP(currentHp);
+		if (currentHp <= 0)
 		{
-			hp = 0;
+			currentHp = 0;
 			Die();
 		}
 		else
@@ -86,6 +107,8 @@ public class PlayerController : MonoBehaviour
 	void Die()
 	{
 		audioSource.PlayOneShot(defeatSound);
+		PlayerPrefs.SetInt("DeathCount", PlayerPrefs.GetInt("DeathCount", 0) + 1);
+		PlayerPrefs.Save();
 		FindFirstObjectByType<FadeController>().FadeOut();
 		Invoke("Respawn", 2f);
 	}
@@ -94,7 +117,9 @@ public class PlayerController : MonoBehaviour
 	{
 		audioSource.PlayOneShot(respawnSound);
 		FindFirstObjectByType<FadeController>().FadeIn();
-		hp = maxHp;
+		currentHp = maxHp;
+		GameManager.Instance.hp = currentHp;
+		UIManager.Instance.UpdateHP(currentHp);
 		animator.SetTrigger("Respawn");
 		transform.position = respawnPoint.position;
 	}

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CactusJelly : MonoBehaviour
 {
-	public float damage = 1f;
+	public int damage = 1;
 	public float lifetime = 5f;
 
 	void Start()
@@ -20,7 +20,7 @@ public class CactusJelly : MonoBehaviour
 				player.TakeDamage(damage);
 			}
 		}
-		if(other.CompareTag("Floor") || other.CompareTag("Player"))
+		if (other.CompareTag("Ground") || other.CompareTag("Player"))
 		{
 			Destroy(gameObject);
 		}
