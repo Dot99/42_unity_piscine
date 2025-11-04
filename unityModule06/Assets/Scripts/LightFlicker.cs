@@ -7,72 +7,72 @@ using UnityEditor;
 
 public class LightFlicker : MonoBehaviour
 {
-    public enum FlickerMode
-    {
-        Random,
-        AnimationCurve
-    }
-    
-    public Light flickeringLight;
-    public Renderer flickeringRenderer;
-    public FlickerMode flickerMode;
-    public float lightIntensityMin = 1.25f;
-    public float lightIntensityMax = 2.25f;
-    public float flickerDuration = 0.075f;
-    public AnimationCurve intensityCurve;
+	public enum FlickerMode
+	{
+		Random,
+		AnimationCurve
+	}
 
-    Material m_FlickeringMaterial;
-    Color m_EmissionColor;
-    float m_Timer;
-    float m_FlickerLightIntensity;
-    
-    static readonly int k_EmissionColorID = Shader.PropertyToID (k_EmissiveColorName);
-    
-    const string k_EmissiveColorName = "_EmissionColor";
-    const string k_EmissionName = "_Emission";
-    const float k_LightIntensityToEmission = 2f / 3f;
+	public Light flickeringLight;
+	public Renderer flickeringRenderer;
+	public FlickerMode flickerMode;
+	public float lightIntensityMin = 1.25f;
+	public float lightIntensityMax = 2.25f;
+	public float flickerDuration = 0.075f;
+	public AnimationCurve intensityCurve;
 
-    void Start()
-    {
-        m_FlickeringMaterial = flickeringRenderer.material;
-        m_FlickeringMaterial.EnableKeyword(k_EmissionName);
-        m_EmissionColor = m_FlickeringMaterial.GetColor(k_EmissionColorID);
-    }
+	Material m_FlickeringMaterial;
+	Color m_EmissionColor;
+	float m_Timer;
+	float m_FlickerLightIntensity;
 
-    void Update()
-    {
-        m_Timer += Time.deltaTime;
+	static readonly int k_EmissionColorID = Shader.PropertyToID(k_EmissiveColorName);
 
-        if (flickerMode == FlickerMode.Random)
-        {
-            if (m_Timer >= flickerDuration)
-            {
-                ChangeRandomFlickerLightIntensity ();
-            }
-        }
-        else if(flickerMode == FlickerMode.AnimationCurve)
-        {
-            ChangeAnimatedFlickerLightIntensity ();
-        }
-            
-        flickeringLight.intensity = m_FlickerLightIntensity;
-        m_FlickeringMaterial.SetColor (k_EmissionColorID, m_EmissionColor * m_FlickerLightIntensity * k_LightIntensityToEmission);
-    }
+	const string k_EmissiveColorName = "_EmissionColor";
+	const string k_EmissionName = "_Emission";
+	const float k_LightIntensityToEmission = 2f / 3f;
 
-    void ChangeRandomFlickerLightIntensity ()
-    {
-        m_FlickerLightIntensity = Random.Range(lightIntensityMin, lightIntensityMax);
+	void Start()
+	{
+		m_FlickeringMaterial = flickeringRenderer.sharedMaterial;
+		m_FlickeringMaterial.EnableKeyword(k_EmissionName);
+		m_EmissionColor = m_FlickeringMaterial.GetColor(k_EmissionColorID);
+	}
 
-        m_Timer = 0f;
-    }
+	void Update()
+	{
+		m_Timer += Time.deltaTime;
 
-    void ChangeAnimatedFlickerLightIntensity ()
-    {
-        m_FlickerLightIntensity = intensityCurve.Evaluate (m_Timer);
+		if (flickerMode == FlickerMode.Random)
+		{
+			if (m_Timer >= flickerDuration)
+			{
+				ChangeRandomFlickerLightIntensity();
+			}
+		}
+		else if (flickerMode == FlickerMode.AnimationCurve)
+		{
+			ChangeAnimatedFlickerLightIntensity();
+		}
 
-        if (m_Timer >= intensityCurve[intensityCurve.length - 1].time)
-            m_Timer = intensityCurve[0].time;
-    }
+		flickeringLight.intensity = m_FlickerLightIntensity;
+		m_FlickeringMaterial.SetColor(k_EmissionColorID, m_EmissionColor * m_FlickerLightIntensity * k_LightIntensityToEmission);
+	}
+
+	void ChangeRandomFlickerLightIntensity()
+	{
+		m_FlickerLightIntensity = Random.Range(lightIntensityMin, lightIntensityMax);
+
+		m_Timer = 0f;
+	}
+
+	void ChangeAnimatedFlickerLightIntensity()
+	{
+		m_FlickerLightIntensity = intensityCurve.Evaluate(m_Timer);
+
+		if (m_Timer >= intensityCurve[intensityCurve.length - 1].time)
+			m_Timer = intensityCurve[0].time;
+	}
 }
 
 #if UNITY_EDITOR
